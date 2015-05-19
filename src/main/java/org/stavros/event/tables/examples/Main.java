@@ -1,4 +1,4 @@
-package org.stavros.event.tables;
+package org.stavros.event.tables.examples;
 
 
 public class Main {

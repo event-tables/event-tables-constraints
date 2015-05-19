@@ -9,6 +9,7 @@ import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VF;
 import org.chocosolver.solver.variables.Variable;
+import org.stavros.event.tables.examples.Main;
 import org.stavros.event.tables.model.Avoid;
 import org.stavros.event.tables.model.Follow;
 import org.stavros.event.tables.model.Guest;

@@ -1,8 +1,9 @@
-package org.stavros.event.tables;
+package org.stavros.event.tables.examples;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.stavros.event.tables.Initiator;
 import org.stavros.event.tables.model.Avoid;
 import org.stavros.event.tables.model.Follow;
 import org.stavros.event.tables.model.Guest;
