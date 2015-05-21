@@ -12,18 +12,43 @@ import org.stavros.event.tables.model.constraints.Follow;
 import org.stavros.event.tables.model.constraints.ForcePlacement;
 
 public class InitiatorCode extends Initiator {
+	
+	private int customNumberOfTables;
+	public void setCustomNumberOfTables(int customNumberOfTables) {
+		this.customNumberOfTables = customNumberOfTables;
+	}
+	public int getCustomNumberOfTables() {
+		return this.customNumberOfTables;
+	}
+	
+	private int customNumberOfGuests;
+	public void setCustomNumberOfGuests(int customNumberOfGuests) {
+		this.customNumberOfGuests = customNumberOfGuests;
+	}
+	public int getCustomNumberOfGuests() {
+		return this.customNumberOfGuests;
+	}
+	
+	private int customNumberOfSeatsPerTable;
+	public void setCustomNumberOfSeatsPerTable(int customNumberOfSeatsPerTable) {
+		this.customNumberOfSeatsPerTable = customNumberOfSeatsPerTable;
+	}
+	public int getCustomNumberOfSeatsPerTable() {
+		return this.customNumberOfSeatsPerTable;
+	}
+	
 	@Override
-	protected List<Table> getTablesDefinitions(int numberOfTables, int numberOfSeatsPerTable) {
+	protected List<Table> getTablesDefinitions() {
 		List<Table> tables = new ArrayList<>();
-		for (int i=0; i<numberOfTables; i++) {
-			tables.add(new Table("table"+(i+1), numberOfSeatsPerTable));
+		for (int i=0; i<getCustomNumberOfTables(); i++) {
+			tables.add(new Table("table"+(i+1), getCustomNumberOfSeatsPerTable()));
 		}
 		return tables;
 	}
 	@Override
-	protected Guest[] getGuestsDefinitions(int numberOfGuests) {
-		Guest[] guests = new Guest[numberOfGuests];
-		for (int i=0; i<numberOfGuests; i++) {
+	protected Guest[] getGuestsDefinitions() {
+		Guest[] guests = new Guest[getCustomNumberOfGuests()];
+		for (int i=0; i<getCustomNumberOfGuests(); i++) {
 			guests[i] = new Guest(i, "guestName_"+(i+1));
 		}
 		return guests;

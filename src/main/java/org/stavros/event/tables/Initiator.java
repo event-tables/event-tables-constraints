@@ -32,9 +32,9 @@ public abstract class Initiator {
 		return availableSeats;
 	}
 	
-	protected abstract List<Table> getTablesDefinitions(int numberOfTables, int numberOfSeatsPerTable);
+	protected abstract List<Table> getTablesDefinitions();
 	
-	protected abstract Guest[] getGuestsDefinitions(int numberOfGuests);
+	protected abstract Guest[] getGuestsDefinitions();
 	
 	protected abstract List<Avoid> getAvoids();
 	
@@ -49,22 +49,39 @@ public abstract class Initiator {
 	}
 	
 	public void go() {
-		// initialize guests
-		int numberOfGuests = 100;
-		Guest[] guests = getGuestsDefinitions(numberOfGuests);
-		
 		// initialize tables
-		int numberOfTables = 10;
-		List<Table> tables = getTablesDefinitions(numberOfTables, 10);
+		List<Table> tables = getTablesDefinitions();
+		int availableSeats = getAvailableSeats(tables);
+		int numberOfTables = tables.size();
+		
+		// initialize guests
+		Guest[] guests = getGuestsDefinitions();
+		int numberOfGuests = guests.length;
 		
 		// validation
-		int availableSeats = getAvailableSeats(tables);
 		if (availableSeats != numberOfGuests) {
 			LOGGER.error("The aggregated number of seats of tables is different from the number of guests");
-			return;
+			if (numberOfGuests > availableSeats) {
+				LOGGER.error("The number of guests is bigger than the number of aggregated table seats");
+				return;
+			}
+			else {
+				LOGGER.error("The aggregated number of seats of tables is bigger than the number of guests... adding " + (availableSeats-numberOfGuests) + " default guests (empty seats)");
+				Guest[] newGuests = Arrays.copyOf(guests, availableSeats);
+				for (int i=numberOfGuests; i<availableSeats; i++) {
+					newGuests[i] = new Guest(i, "emptySeat");
+				}
+				guests = newGuests;
+				numberOfGuests = availableSeats;
+			}
 		}
 		
+		// the number of guests should be equal to the number of available seats
+		
 		Solver solver = new Solver();
+		
+		// one variable for each guest
+		// each one of the guests variables can take a value between 1 and the number of tables
         IntVar[] guestsVar = VF.enumeratedArray(guestsArrayPrefix, numberOfGuests, 1, numberOfTables, solver);
         
         int i=0;

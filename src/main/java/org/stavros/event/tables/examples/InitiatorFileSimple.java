@@ -17,7 +17,7 @@ import org.stavros.event.tables.model.constraints.ForcePlacement;
 public class InitiatorFileSimple extends Initiator {
 
 	@Override
-	protected List<Table> getTablesDefinitions(int numberOfTables, int numberOfSeatsPerTable) {
+	protected List<Table> getTablesDefinitions() {
 		List<Table> tables = new ArrayList<>();
 		File file = new File(getClass().getClassLoader().getResource("tables.csv").getFile());
 		try (Scanner scanner = new Scanner(file);) {
@@ -34,20 +34,21 @@ public class InitiatorFileSimple extends Initiator {
 	}
 
 	@Override
-	protected Guest[] getGuestsDefinitions(int numberOfGuests) {
-		Guest[] guests = new Guest[numberOfGuests];
+	protected Guest[] getGuestsDefinitions() {
+		List<Guest> listGuests = new ArrayList<>();
 		File file = new File(getClass().getClassLoader().getResource("guests.csv").getFile());
 		try (Scanner scanner = new Scanner(file);) {
-			int i = 0;
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 				String[] fields = line.split(",");
-				guests[i++] = new Guest(Integer.valueOf(fields[0].trim()), fields[1]);
+				listGuests.add(new Guest(Integer.valueOf(fields[0].trim()), fields[1]));
 			}
 		}
 		catch(FileNotFoundException fnfe) {
 			LOGGER.error(fnfe.getMessage(), fnfe);
 		}
+		
+		Guest[] guests = (Guest[])listGuests.toArray();
 		return guests;
 	}
 
