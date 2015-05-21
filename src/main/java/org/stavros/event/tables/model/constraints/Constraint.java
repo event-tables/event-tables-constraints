@@ -1,4 +1,4 @@
-package org.stavros.event.tables.model;
+package org.stavros.event.tables.model.constraints;
 
 public abstract class Constraint {
 	

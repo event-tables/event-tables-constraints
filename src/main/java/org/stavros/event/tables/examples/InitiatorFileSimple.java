@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.stavros.event.tables.Initiator;
-import org.stavros.event.tables.model.Avoid;
-import org.stavros.event.tables.model.Follow;
 import org.stavros.event.tables.model.Guest;
 import org.stavros.event.tables.model.Table;
+import org.stavros.event.tables.model.constraints.Avoid;
+import org.stavros.event.tables.model.constraints.Follow;
 
 public class InitiatorFileSimple extends Initiator {
 

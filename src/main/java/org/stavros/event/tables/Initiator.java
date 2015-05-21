@@ -10,10 +10,10 @@ import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VF;
 import org.chocosolver.solver.variables.Variable;
 import org.stavros.event.tables.examples.Main;
-import org.stavros.event.tables.model.Avoid;
-import org.stavros.event.tables.model.Follow;
 import org.stavros.event.tables.model.Guest;
 import org.stavros.event.tables.model.Table;
+import org.stavros.event.tables.model.constraints.Avoid;
+import org.stavros.event.tables.model.constraints.Follow;
 
 public abstract class Initiator {
 	
