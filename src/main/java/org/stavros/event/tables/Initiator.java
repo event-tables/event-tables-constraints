@@ -13,7 +13,9 @@ import org.stavros.event.tables.examples.Main;
 import org.stavros.event.tables.model.Guest;
 import org.stavros.event.tables.model.Table;
 import org.stavros.event.tables.model.constraints.Avoid;
+import org.stavros.event.tables.model.constraints.AvoidPlacement;
 import org.stavros.event.tables.model.constraints.Follow;
+import org.stavros.event.tables.model.constraints.ForcePlacement;
 
 public abstract class Initiator {
 	
@@ -36,6 +38,10 @@ public abstract class Initiator {
 	protected abstract List<Avoid> getAvoids();
 	
 	protected abstract List<Follow> getFollows();
+	
+	protected abstract List<AvoidPlacement> getAvoidPlacements();
+	
+	protected abstract List<ForcePlacement> getForcePlacements();
 	
 	protected int getIndex(String val) {
 		return Integer.valueOf(val.substring(val.indexOf('[')+1, val.indexOf(']')));
@@ -75,6 +81,14 @@ public abstract class Initiator {
         	solver.post(ICF.absolute(guestsVar[follow.getGuestIndex1()], guestsVar[follow.getGuestIndex2()]));
         }
         
+        for (AvoidPlacement avoidPlacement: getAvoidPlacements()) {
+        	solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoidPlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, avoidPlacement.getTableName())}));
+        }
+        
+        for (ForcePlacement forcePlacement: getForcePlacements()) {
+        	solver.post(ICF.absolute(guestsVar[forcePlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, forcePlacement.getTableName())));
+        }
+        
         if(solver.findSolution()){
     	   //do{
     	       for (Variable var: solver.getVars()) {
@@ -94,6 +108,34 @@ public abstract class Initiator {
     	       }
     	   //}while(solver.nextSolution());
     	}
+	}
+	
+	private int getTableOrderIndex(List<Table> tables, String tableName) {
+		int ret = 0;
+		int i = 0;
+		for (Table table: tables) {
+			if (tableName.equals(table.getName())) {
+				ret = i;
+				break;
+			}
+			i++;
+		}
+		
+		if (ret == 0) {
+			throw new IllegalStateException();
+		}
+		return ret;
+	}
+	
+	private Variable getVariableValue(Solver solver, String variableName) {
+		Variable ret = null;
+		for (Variable var: solver.getVars()) {
+			if (variableName.equals(var.getName())) {
+				ret = var;
+				break;
+			}
+		}
+		return ret;
 	}
 
 }

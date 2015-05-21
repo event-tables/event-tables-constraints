@@ -10,7 +10,9 @@ import org.stavros.event.tables.Initiator;
 import org.stavros.event.tables.model.Guest;
 import org.stavros.event.tables.model.Table;
 import org.stavros.event.tables.model.constraints.Avoid;
+import org.stavros.event.tables.model.constraints.AvoidPlacement;
 import org.stavros.event.tables.model.constraints.Follow;
+import org.stavros.event.tables.model.constraints.ForcePlacement;
 
 public class InitiatorFileSimple extends Initiator {
 
@@ -81,6 +83,18 @@ public class InitiatorFileSimple extends Initiator {
 			LOGGER.error(fnfe.getMessage(), fnfe);
 		}
 		return follows;
+	}
+	
+	@Override
+	protected List<AvoidPlacement> getAvoidPlacements() {
+		List<AvoidPlacement> avoidPlacements = new ArrayList<>();
+		return avoidPlacements;
+	}
+	
+	@Override
+	protected List<ForcePlacement> getForcePlacements() {
+		List<ForcePlacement> forcePlacements = new ArrayList<>();
+		return forcePlacements;
 	}
 
 }

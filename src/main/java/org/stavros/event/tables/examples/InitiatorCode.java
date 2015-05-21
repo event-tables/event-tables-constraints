@@ -7,7 +7,9 @@ import org.stavros.event.tables.Initiator;
 import org.stavros.event.tables.model.Guest;
 import org.stavros.event.tables.model.Table;
 import org.stavros.event.tables.model.constraints.Avoid;
+import org.stavros.event.tables.model.constraints.AvoidPlacement;
 import org.stavros.event.tables.model.constraints.Follow;
+import org.stavros.event.tables.model.constraints.ForcePlacement;
 
 public class InitiatorCode extends Initiator {
 	@Override
@@ -55,5 +57,27 @@ public class InitiatorCode extends Initiator {
 		follows.add(new Follow(85, 86));
 		follows.add(new Follow(95, 96));
 		return follows;
+	}
+	
+	@Override
+	protected List<AvoidPlacement> getAvoidPlacements() {
+		List<AvoidPlacement> avoidPlacements = new ArrayList<>();
+		avoidPlacements.add(new AvoidPlacement(97, "table1"));
+		avoidPlacements.add(new AvoidPlacement(97, "table2"));
+		avoidPlacements.add(new AvoidPlacement(97, "table4"));
+		avoidPlacements.add(new AvoidPlacement(97, "table5"));
+		avoidPlacements.add(new AvoidPlacement(97, "table6"));
+		avoidPlacements.add(new AvoidPlacement(97, "table7"));
+		avoidPlacements.add(new AvoidPlacement(97, "table8"));
+		avoidPlacements.add(new AvoidPlacement(97, "table9"));
+		avoidPlacements.add(new AvoidPlacement(97, "table10"));
+		return avoidPlacements;
+	}
+	
+	@Override
+	protected List<ForcePlacement> getForcePlacements() {
+		List<ForcePlacement> forcePlacements = new ArrayList<>();
+		forcePlacements.add(new ForcePlacement(96, "table1"));
+		return forcePlacements;
 	}
 }
