@@ -1,5 +1,6 @@
 package org.stavros.event.tables;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.LogManager;
@@ -73,18 +74,22 @@ public abstract class Initiator {
         	solver.post(ICF.count(tableNumber, guestsVar, positions));
         }
         
+        // Apply the guests avoid constraints (guest avoids another guest)
         for (Avoid avoid: getAvoids()) {
         	solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoid.getGuestIndex1()], guestsVar[avoid.getGuestIndex2()]}));
         }
         
+        // Apply the guests follow constraints (guest follows another guest)
         for (Follow follow: getFollows()) {
         	solver.post(ICF.absolute(guestsVar[follow.getGuestIndex1()], guestsVar[follow.getGuestIndex2()]));
         }
         
+        // Apply the avoid placement constraints (guest avoids placement to a specific table)
         for (AvoidPlacement avoidPlacement: getAvoidPlacements()) {
         	solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoidPlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, avoidPlacement.getTableName())}));
         }
         
+        // Apply the force placement constraints (guest forced placement to a specific table)
         for (ForcePlacement forcePlacement: getForcePlacements()) {
         	solver.post(ICF.absolute(guestsVar[forcePlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, forcePlacement.getTableName())));
         }
