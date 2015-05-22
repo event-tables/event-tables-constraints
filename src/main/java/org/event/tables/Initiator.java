@@ -82,54 +82,54 @@ public abstract class Initiator {
 		
 		// one variable for each guest
 		// each one of the guests variables can take a value between 1 and the number of tables
-        IntVar[] guestsVar = VF.enumeratedArray(guestsArrayPrefix, numberOfGuests, 1, numberOfTables, solver);
-        
-        int i=0;
-        for (Table table: tables) {
-        	IntVar positions = VF.enumerated("positions_"+table.getName(), new int[]{table.getSeats()}, solver);
-        	IntVar tableNumber = VF.enumerated(table.getName(), new int[]{++i}, solver);
-        	solver.post(ICF.count(tableNumber, guestsVar, positions));
-        }
-        
-        // Apply the guests avoid constraints (guest avoids another guest)
-        for (Avoid avoid: getAvoids()) {
-        	solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoid.getGuestIndex1()], guestsVar[avoid.getGuestIndex2()]}));
-        }
-        
-        // Apply the guests follow constraints (guest follows another guest)
-        for (Follow follow: getFollows()) {
-        	solver.post(ICF.absolute(guestsVar[follow.getGuestIndex1()], guestsVar[follow.getGuestIndex2()]));
-        }
-        
-        // Apply the avoid placement constraints (guest avoids placement to a specific table)
-        for (AvoidPlacement avoidPlacement: getAvoidPlacements()) {
-        	solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoidPlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, avoidPlacement.getTableName())}));
-        }
-        
-        // Apply the force placement constraints (guest forced placement to a specific table)
-        for (ForcePlacement forcePlacement: getForcePlacements()) {
-        	solver.post(ICF.absolute(guestsVar[forcePlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, forcePlacement.getTableName())));
-        }
-        
-        if(solver.findSolution()){
-    	   //do{
-    	       for (Variable var: solver.getVars()) {
-    	    	   if (var instanceof IntVar) {
-    	    		   if (var.getName().startsWith(guestsArrayPrefix)) {
-    	    			   int index = getIndex(var.getName());
-    	    			   LOGGER.info(guests[index].getName() + ":\t" + ((IntVar)var).getValue());
-    	    		   }
-    	    	   }
-    	       }
-    	       for (Variable var: solver.getVars()) {
-    	    	   if (var instanceof IntVar) {
-    	    		   if (!var.getName().startsWith(guestsArrayPrefix)) {
-    	    			   LOGGER.info(var.getName() + ": " + ((IntVar)var).getValue());
-    	    		   }
-    	    	   }
-    	       }
-    	   //}while(solver.nextSolution());
-    	}
+		IntVar[] guestsVar = VF.enumeratedArray(guestsArrayPrefix, numberOfGuests, 1, numberOfTables, solver);
+		
+		int i=0;
+		for (Table table: tables) {
+			IntVar positions = VF.enumerated("positions_"+table.getName(), new int[]{table.getSeats()}, solver);
+			IntVar tableNumber = VF.enumerated(table.getName(), new int[]{++i}, solver);
+			solver.post(ICF.count(tableNumber, guestsVar, positions));
+		}
+		
+		// Apply the guests avoid constraints (guest avoids another guest)
+		for (Avoid avoid: getAvoids()) {
+			solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoid.getGuestIndex1()], guestsVar[avoid.getGuestIndex2()]}));
+		}
+		
+		// Apply the guests follow constraints (guest follows another guest)
+		for (Follow follow: getFollows()) {
+			solver.post(ICF.absolute(guestsVar[follow.getGuestIndex1()], guestsVar[follow.getGuestIndex2()]));
+		}
+		
+		// Apply the avoid placement constraints (guest avoids placement to a specific table)
+		for (AvoidPlacement avoidPlacement: getAvoidPlacements()) {
+			solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoidPlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, avoidPlacement.getTableName())}));
+		}
+		
+		// Apply the force placement constraints (guest forced placement to a specific table)
+		for (ForcePlacement forcePlacement: getForcePlacements()) {
+			solver.post(ICF.absolute(guestsVar[forcePlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, forcePlacement.getTableName())));
+		}
+		
+		if(solver.findSolution()){
+			//do{
+				for (Variable var: solver.getVars()) {
+					if (var instanceof IntVar) {
+						if (var.getName().startsWith(guestsArrayPrefix)) {
+							int index = getIndex(var.getName());
+							LOGGER.info(guests[index].getName() + ":\t" + ((IntVar)var).getValue());
+						}
+					}
+				}
+				for (Variable var: solver.getVars()) {
+					if (var instanceof IntVar) {
+						if (!var.getName().startsWith(guestsArrayPrefix)) {
+							LOGGER.info(var.getName() + ": " + ((IntVar)var).getValue());
+						}
+					}
+				}
+			//}while(solver.nextSolution());
+		}
 	}
 	
 	private int getTableOrderIndex(List<Table> tables, String tableName) {
