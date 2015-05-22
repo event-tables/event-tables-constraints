@@ -1,4 +1,4 @@
-package org.stavros.event.tables;
+package org.event.tables;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,13 +10,13 @@ import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VF;
 import org.chocosolver.solver.variables.Variable;
-import org.stavros.event.tables.examples.Main;
-import org.stavros.event.tables.model.Guest;
-import org.stavros.event.tables.model.Table;
-import org.stavros.event.tables.model.constraints.Avoid;
-import org.stavros.event.tables.model.constraints.AvoidPlacement;
-import org.stavros.event.tables.model.constraints.Follow;
-import org.stavros.event.tables.model.constraints.ForcePlacement;
+import org.event.tables.examples.Main;
+import org.event.tables.model.Guest;
+import org.event.tables.model.Table;
+import org.event.tables.model.constraints.Avoid;
+import org.event.tables.model.constraints.AvoidPlacement;
+import org.event.tables.model.constraints.Follow;
+import org.event.tables.model.constraints.ForcePlacement;
 
 public abstract class Initiator {
 	

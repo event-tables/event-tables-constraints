@@ -1,4 +1,4 @@
-package org.stavros.event.tables.examples;
+package org.event.tables.examples;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.stavros.event.tables.Initiator;
-import org.stavros.event.tables.model.Guest;
-import org.stavros.event.tables.model.Table;
-import org.stavros.event.tables.model.constraints.Avoid;
-import org.stavros.event.tables.model.constraints.AvoidPlacement;
-import org.stavros.event.tables.model.constraints.Follow;
-import org.stavros.event.tables.model.constraints.ForcePlacement;
+import org.event.tables.Initiator;
+import org.event.tables.model.Guest;
+import org.event.tables.model.Table;
+import org.event.tables.model.constraints.Avoid;
+import org.event.tables.model.constraints.AvoidPlacement;
+import org.event.tables.model.constraints.Follow;
+import org.event.tables.model.constraints.ForcePlacement;
 
 public class InitiatorFileSimple extends Initiator {
 

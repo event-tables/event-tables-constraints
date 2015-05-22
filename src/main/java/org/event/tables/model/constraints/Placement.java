@@ -1,4 +1,4 @@
-package org.stavros.event.tables.model.constraints;
+package org.event.tables.model.constraints;
 
 public class Placement extends Constraint {
 	public Placement(int guestIndex1, String tableName) {

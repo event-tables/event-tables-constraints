@@ -1,15 +1,15 @@
-package org.stavros.event.tables.examples;
+package org.event.tables.examples;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.stavros.event.tables.Initiator;
-import org.stavros.event.tables.model.Guest;
-import org.stavros.event.tables.model.Table;
-import org.stavros.event.tables.model.constraints.Avoid;
-import org.stavros.event.tables.model.constraints.AvoidPlacement;
-import org.stavros.event.tables.model.constraints.Follow;
-import org.stavros.event.tables.model.constraints.ForcePlacement;
+import org.event.tables.Initiator;
+import org.event.tables.model.Guest;
+import org.event.tables.model.Table;
+import org.event.tables.model.constraints.Avoid;
+import org.event.tables.model.constraints.AvoidPlacement;
+import org.event.tables.model.constraints.Follow;
+import org.event.tables.model.constraints.ForcePlacement;
 
 public class InitiatorCode extends Initiator {
 	

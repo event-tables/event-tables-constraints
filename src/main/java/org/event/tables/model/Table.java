@@ -1,4 +1,4 @@
-package org.stavros.event.tables.model;
+package org.event.tables.model;
 
 public class Table {
 	
