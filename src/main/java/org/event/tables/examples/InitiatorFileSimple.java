@@ -17,8 +17,8 @@ import org.event.tables.model.constraints.ForcePlacement;
 public class InitiatorFileSimple extends Initiator {
 
 	@Override
-	protected List<Table> getTablesDefinitions() {
-		List<Table> tables = new ArrayList<>();
+	protected void initTablesDefinitions() {
+		this.tables = new ArrayList<>();
 		File file = new File(getClass().getClassLoader().getResource("tables.csv").getFile());
 		try (Scanner scanner = new Scanner(file);) {
 			while (scanner.hasNextLine()) {
@@ -30,11 +30,10 @@ public class InitiatorFileSimple extends Initiator {
 		catch(FileNotFoundException fnfe) {
 			LOGGER.error(fnfe.getMessage(), fnfe);
 		}
-		return tables;
 	}
 
 	@Override
-	protected Guest[] getGuestsDefinitions() {
+	protected void initGuestsDefinitions() {
 		List<Guest> listGuests = new ArrayList<>();
 		File file = new File(getClass().getClassLoader().getResource("guests.csv").getFile());
 		try (Scanner scanner = new Scanner(file);) {
@@ -48,12 +47,11 @@ public class InitiatorFileSimple extends Initiator {
 			LOGGER.error(fnfe.getMessage(), fnfe);
 		}
 		
-		Guest[] guests = (Guest[])listGuests.toArray();
-		return guests;
+		this.guests = (Guest[])listGuests.toArray();
 	}
 
 	@Override
-	protected List<Avoid> getAvoids() {
+	protected void initAvoids() {
 		List<Avoid> avoids = new ArrayList<>();
 		File file = new File(getClass().getClassLoader().getResource("avoids.csv").getFile());
 		try (Scanner scanner = new Scanner(file);) {
@@ -66,36 +64,32 @@ public class InitiatorFileSimple extends Initiator {
 		catch(FileNotFoundException fnfe) {
 			LOGGER.error(fnfe.getMessage(), fnfe);
 		}
-		return avoids;
 	}
 
 	@Override
-	protected List<Follow> getFollows() {
-		List<Follow> follows = new ArrayList<>();
+	protected void initFollows() {
+		this.follows = new ArrayList<>();
 		File file = new File(getClass().getClassLoader().getResource("follows.csv").getFile());
 		try (Scanner scanner = new Scanner(file);) {
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 				String[] fields = line.split(",");
-				follows.add(new Follow(Integer.valueOf(fields[0].trim()), Integer.valueOf(fields[1].trim())));
+				this.follows.add(new Follow(Integer.valueOf(fields[0].trim()), Integer.valueOf(fields[1].trim())));
 			}
 		}
 		catch(FileNotFoundException fnfe) {
 			LOGGER.error(fnfe.getMessage(), fnfe);
 		}
-		return follows;
 	}
 	
 	@Override
-	protected List<AvoidPlacement> getAvoidPlacements() {
-		List<AvoidPlacement> avoidPlacements = new ArrayList<>();
-		return avoidPlacements;
+	protected void initAvoidPlacements() {
+		this.avoidPlacements = new ArrayList<>();
 	}
 	
 	@Override
-	protected List<ForcePlacement> getForcePlacements() {
-		List<ForcePlacement> forcePlacements = new ArrayList<>();
-		return forcePlacements;
+	protected void initForcePlacements() {
+		this.forcePlacements = new ArrayList<>();
 	}
 
 }

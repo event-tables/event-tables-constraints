@@ -38,24 +38,22 @@ public class InitiatorCode extends Initiator {
 	}
 	
 	@Override
-	protected List<Table> getTablesDefinitions() {
-		List<Table> tables = new ArrayList<>();
+	protected void initTablesDefinitions() {
+		this.tables = new ArrayList<>();
 		for (int i=0; i<getCustomNumberOfTables(); i++) {
 			tables.add(new Table("table"+(i+1), getCustomNumberOfSeatsPerTable()));
 		}
-		return tables;
 	}
 	@Override
-	protected Guest[] getGuestsDefinitions() {
-		Guest[] guests = new Guest[getCustomNumberOfGuests()];
+	protected void initGuestsDefinitions() {
+		this.guests = new Guest[getCustomNumberOfGuests()];
 		for (int i=0; i<getCustomNumberOfGuests(); i++) {
 			guests[i] = new Guest(i, "guestName_"+(i+1));
 		}
-		return guests;
 	}
 	@Override
-	protected List<Avoid> getAvoids() {
-		List<Avoid> avoids = new ArrayList<>();
+	protected void initAvoids() {
+		this.avoids = new ArrayList<>();
 		avoids.add(new Avoid(0, 1));
 		avoids.add(new Avoid(10, 11));
 		avoids.add(new Avoid(20, 21));
@@ -66,11 +64,10 @@ public class InitiatorCode extends Initiator {
 		avoids.add(new Avoid(70, 71));
 		avoids.add(new Avoid(80, 81));
 		avoids.add(new Avoid(90, 91));
-		return avoids;
 	}
 	@Override
-	protected List<Follow> getFollows() {
-		List<Follow> follows = new ArrayList<>();
+	protected void initFollows() {
+		this.follows = new ArrayList<>();
 		follows.add(new Follow(5, 6));
 		follows.add(new Follow(15, 16));
 		follows.add(new Follow(25, 26));
@@ -81,12 +78,11 @@ public class InitiatorCode extends Initiator {
 		follows.add(new Follow(75, 76));
 		follows.add(new Follow(85, 86));
 		follows.add(new Follow(95, 96));
-		return follows;
 	}
 	
 	@Override
-	protected List<AvoidPlacement> getAvoidPlacements() {
-		List<AvoidPlacement> avoidPlacements = new ArrayList<>();
+	protected void initAvoidPlacements() {
+		this.avoidPlacements = new ArrayList<>();
 		avoidPlacements.add(new AvoidPlacement(97, "table1"));
 		avoidPlacements.add(new AvoidPlacement(97, "table2"));
 		avoidPlacements.add(new AvoidPlacement(97, "table4"));
@@ -96,13 +92,11 @@ public class InitiatorCode extends Initiator {
 		avoidPlacements.add(new AvoidPlacement(97, "table8"));
 		avoidPlacements.add(new AvoidPlacement(97, "table9"));
 		avoidPlacements.add(new AvoidPlacement(97, "table10"));
-		return avoidPlacements;
 	}
 	
 	@Override
-	protected List<ForcePlacement> getForcePlacements() {
-		List<ForcePlacement> forcePlacements = new ArrayList<>();
+	protected void initForcePlacements() {
+		this.forcePlacements = new ArrayList<>();
 		forcePlacements.add(new ForcePlacement(96, "table1"));
-		return forcePlacements;
 	}
 }

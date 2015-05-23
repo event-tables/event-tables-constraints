@@ -1,5 +1,6 @@
 package org.event.tables;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,8 +11,9 @@ import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VF;
 import org.chocosolver.solver.variables.Variable;
-import org.event.tables.examples.Main;
 import org.event.tables.model.Guest;
+import org.event.tables.model.PlaceAssignment;
+import org.event.tables.model.Solution;
 import org.event.tables.model.Table;
 import org.event.tables.model.constraints.Avoid;
 import org.event.tables.model.constraints.AvoidPlacement;
@@ -20,11 +22,11 @@ import org.event.tables.model.constraints.ForcePlacement;
 
 public abstract class Initiator {
 	
-	public final static Logger LOGGER = LogManager.getLogger(Main.class);
+	public final static Logger LOGGER = LogManager.getLogger(Initiator.class);
 	
 	private final static String guestsArrayPrefix = "guests";
 	
-	protected int getAvailableSeats(List<Table> tables) {
+	protected int getAvailableSeats() {
 		int availableSeats = 0;
 		for (Table table: tables) {
 			availableSeats+=table.getSeats();
@@ -32,30 +34,56 @@ public abstract class Initiator {
 		return availableSeats;
 	}
 	
-	protected abstract List<Table> getTablesDefinitions();
+	protected abstract void initTablesDefinitions();
 	
-	protected abstract Guest[] getGuestsDefinitions();
+	protected abstract void initGuestsDefinitions();
 	
-	protected abstract List<Avoid> getAvoids();
+	protected abstract void initAvoids();
 	
-	protected abstract List<Follow> getFollows();
+	protected abstract void initFollows();
 	
-	protected abstract List<AvoidPlacement> getAvoidPlacements();
+	protected abstract void initAvoidPlacements();
 	
-	protected abstract List<ForcePlacement> getForcePlacements();
+	protected abstract void initForcePlacements();
 	
 	protected int getIndex(String val) {
 		return Integer.valueOf(val.substring(val.indexOf('[')+1, val.indexOf(']')));
 	}
 	
-	public void go() {
+	private Solver solver;
+	protected List<Table> tables;
+	protected final List<Table> getTables() {
+		return this.tables;
+	}
+	protected Guest[] guests;
+	protected final Guest[] getGuests() {
+		return this.guests;
+	}
+	protected List<Avoid> avoids;
+	protected final List<Avoid> getAvoids() {
+		return this.avoids;
+	}
+	protected List<Follow> follows;
+	protected final List<Follow> getFollows() {
+		return this.follows;
+	}
+	protected List<AvoidPlacement> avoidPlacements;
+	protected final List<AvoidPlacement> getAvoidPlacements() {
+		return this.avoidPlacements;
+	}
+	protected List<ForcePlacement> forcePlacements;
+	protected final List<ForcePlacement> getForcePlacements() {
+		return this.forcePlacements;
+	}
+	
+	private void go() {
 		// initialize tables
-		List<Table> tables = getTablesDefinitions();
-		int availableSeats = getAvailableSeats(tables);
+		initTablesDefinitions();
+		int availableSeats = getAvailableSeats();
 		int numberOfTables = tables.size();
 		
 		// initialize guests
-		Guest[] guests = getGuestsDefinitions();
+		initGuestsDefinitions();
 		int numberOfGuests = guests.length;
 		
 		// validation
@@ -78,7 +106,7 @@ public abstract class Initiator {
 		
 		// the number of guests should be equal to the number of available seats
 		
-		Solver solver = new Solver();
+		this.solver = new Solver();
 		
 		// one variable for each guest
 		// each one of the guests variables can take a value between 1 and the number of tables
@@ -92,44 +120,92 @@ public abstract class Initiator {
 		}
 		
 		// Apply the guests avoid constraints (guest avoids another guest)
+		initAvoids();
 		for (Avoid avoid: getAvoids()) {
 			solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoid.getGuestIndex1()], guestsVar[avoid.getGuestIndex2()]}));
 		}
 		
 		// Apply the guests follow constraints (guest follows another guest)
+		initFollows();
 		for (Follow follow: getFollows()) {
 			solver.post(ICF.absolute(guestsVar[follow.getGuestIndex1()], guestsVar[follow.getGuestIndex2()]));
 		}
 		
 		// Apply the avoid placement constraints (guest avoids placement to a specific table)
+		initAvoidPlacements();
 		for (AvoidPlacement avoidPlacement: getAvoidPlacements()) {
-			solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoidPlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, avoidPlacement.getTableName())}));
+			solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoidPlacement.getGuestIndex1()], (IntVar)getVariableValue(avoidPlacement.getTableName())}));
 		}
 		
 		// Apply the force placement constraints (guest forced placement to a specific table)
+		initForcePlacements();
 		for (ForcePlacement forcePlacement: getForcePlacements()) {
-			solver.post(ICF.absolute(guestsVar[forcePlacement.getGuestIndex1()], (IntVar)getVariableValue(solver, forcePlacement.getTableName())));
+			solver.post(ICF.absolute(guestsVar[forcePlacement.getGuestIndex1()], (IntVar)getVariableValue(forcePlacement.getTableName())));
 		}
+	}
+	
+	public Solution getFirstSolution() {
+		go();
 		
+		List<PlaceAssignment> placeAssignments = new ArrayList<>();
 		if(solver.findSolution()){
 			//do{
 				for (Variable var: solver.getVars()) {
 					if (var instanceof IntVar) {
 						if (var.getName().startsWith(guestsArrayPrefix)) {
+							Table table = getTableByValue(((IntVar)var).getValue());
 							int index = getIndex(var.getName());
-							LOGGER.info(guests[index].getName() + ":\t" + ((IntVar)var).getValue());
-						}
-					}
-				}
-				for (Variable var: solver.getVars()) {
-					if (var instanceof IntVar) {
-						if (!var.getName().startsWith(guestsArrayPrefix)) {
-							LOGGER.info(var.getName() + ": " + ((IntVar)var).getValue());
+							Guest guest = guests[index];
+							PlaceAssignment pa = new PlaceAssignment(table, guest);
+							placeAssignments.add(pa);
 						}
 					}
 				}
 			//}while(solver.nextSolution());
 		}
+		
+		Solution solution = new Solution();
+		solution.setPlaceAssignments(placeAssignments);
+		return solution;
+	}
+	
+	public List<Solution> getSolutions() {
+		go();
+		
+		List<Solution> solutions = new ArrayList<>();
+		
+		if(solver.findSolution()){
+			do{
+				List<PlaceAssignment> placeAssignments = new ArrayList<>();
+				for (Variable var: solver.getVars()) {
+					if (var instanceof IntVar) {
+						if (var.getName().startsWith(guestsArrayPrefix)) {
+							Table table = getTableByValue(((IntVar)var).getValue());
+							int index = getIndex(var.getName());
+							Guest guest = guests[index];
+							PlaceAssignment pa = new PlaceAssignment(table, guest);
+							placeAssignments.add(pa);
+						}
+					}
+				}
+				Solution solution = new Solution();
+				solution.setPlaceAssignments(placeAssignments);
+				solutions.add(solution);
+			} while(solver.nextSolution());
+		}
+		
+		return solutions;
+	}
+	
+	private Table getTableByValue(int value) {
+		Table ret = null;
+		for (Table table: tables) {
+			if (((IntVar)getVariableValue(table.getName())).getValue() == value) {
+				ret = table;
+				break;
+			}
+		}
+		return ret;
 	}
 	
 	private int getTableOrderIndex(List<Table> tables, String tableName) {
@@ -149,7 +225,7 @@ public abstract class Initiator {
 		return ret;
 	}
 	
-	private Variable getVariableValue(Solver solver, String variableName) {
+	private Variable getVariableValue(String variableName) {
 		Variable ret = null;
 		for (Variable var: solver.getVars()) {
 			if (variableName.equals(var.getName())) {
