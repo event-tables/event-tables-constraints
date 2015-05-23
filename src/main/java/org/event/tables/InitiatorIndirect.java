@@ -22,7 +22,7 @@ public class InitiatorIndirect extends Initiator {
 	protected void initGuestsDefinitions() {
 	}
 	public void setGuests(List<Guest> guests) {
-		this.guests = (Guest[])guests.toArray();
+		this.guests = guests.toArray(new Guest[0]);
 	}
 
 	@Override

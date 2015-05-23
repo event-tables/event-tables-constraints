@@ -121,26 +121,34 @@ public abstract class Initiator {
 		
 		// Apply the guests avoid constraints (guest avoids another guest)
 		initAvoids();
-		for (Avoid avoid: getAvoids()) {
-			solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoid.getGuestIndex1()], guestsVar[avoid.getGuestIndex2()]}));
+		if (getAvoids() != null) {
+			for (Avoid avoid: getAvoids()) {
+				solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoid.getGuestIndex1()], guestsVar[avoid.getGuestIndex2()]}));
+			}
 		}
 		
 		// Apply the guests follow constraints (guest follows another guest)
 		initFollows();
-		for (Follow follow: getFollows()) {
-			solver.post(ICF.absolute(guestsVar[follow.getGuestIndex1()], guestsVar[follow.getGuestIndex2()]));
+		if (getFollows() != null) {
+			for (Follow follow: getFollows()) {
+				solver.post(ICF.absolute(guestsVar[follow.getGuestIndex1()], guestsVar[follow.getGuestIndex2()]));
+			}
 		}
 		
 		// Apply the avoid placement constraints (guest avoids placement to a specific table)
 		initAvoidPlacements();
-		for (AvoidPlacement avoidPlacement: getAvoidPlacements()) {
-			solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoidPlacement.getGuestIndex1()], (IntVar)getVariableValue(avoidPlacement.getTableName())}));
+		if (getAvoidPlacements() != null) {
+			for (AvoidPlacement avoidPlacement: getAvoidPlacements()) {
+				solver.post(ICF.alldifferent(new IntVar[]{guestsVar[avoidPlacement.getGuestIndex1()], (IntVar)getVariableValue(avoidPlacement.getTableName())}));
+			}
 		}
 		
 		// Apply the force placement constraints (guest forced placement to a specific table)
 		initForcePlacements();
-		for (ForcePlacement forcePlacement: getForcePlacements()) {
-			solver.post(ICF.absolute(guestsVar[forcePlacement.getGuestIndex1()], (IntVar)getVariableValue(forcePlacement.getTableName())));
+		if (getForcePlacements() != null) {
+			for (ForcePlacement forcePlacement: getForcePlacements()) {
+				solver.post(ICF.absolute(guestsVar[forcePlacement.getGuestIndex1()], (IntVar)getVariableValue(forcePlacement.getTableName())));
+			}
 		}
 	}
 	
